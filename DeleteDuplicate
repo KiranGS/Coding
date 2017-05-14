@@ -1,0 +1,139 @@
+
+/**************************************************************************************************************
+ * Module Name: CORE_JAVA
+ * Version Control Block
+ *
+ * Date         Version    Author          Reviewer       Change Description
+ * -----------  ---------  --------------  -------------  -------------------
+ * May 14, 2017 1.0        Kiran S         xxxxxxxxx      Created
+ * -----------  ---------  --------------  -------------  -------------------
+ *  
+ **************************************************************************************************************/
+
+package com.java.interview.ques;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**************************************************************************************************************
+ * Java File   : DeleteDuplicate.java
+ * Author      : Kiran G S
+ * Description : This class is used to remove the duplicates numbers from given array by using different 
+ *               types of approaches.   
+ **************************************************************************************************************/
+
+public class DeleteDuplicate 
+{
+	
+	public  int[] randomIntegers = { 1,2,34,34,25,1,45,3,26,85,4,34,86,25,43,2,1,10000,11,16,19,1,18,4,9,3,
+			20,17,8,15,6,2,5,10,14,12,13,7,8,9,1,2,15,12,18,10,14,20,17,16,3,6,19,
+			13,5,11,4,7,19,16,5,9,12,3,20,7,15,17,10,6,1,8,18,4,14,13,2,11 };   
+
+	public  static void main(String[] args) 
+	{
+		DeleteDuplicate deleteDuplicate = new DeleteDuplicate();
+		List<Integer> results = deleteDuplicate.removeDuplicateInArray();
+		System.out.println("");
+		System.out.println("*********** Remove Duplicates through Lambda functions **************");
+		System.out.println(results); 
+		System.out.println("");
+
+		Set<Integer> resultSet = deleteDuplicate.removeDuplicateInIntArray();
+		System.out.println("*********** Remove Duplicates through LinkedHashSet **************");
+		System.out.println(resultSet); 
+		System.out.println("");
+		
+		List<Integer> resultList = deleteDuplicate.removeDuplicateIntegers();
+		System.out.println("*********** Remove Duplicates through LinkedList **************");
+		System.out.println(resultList); 
+		System.out.println("");
+		
+		int[] uniqueList = deleteDuplicate.removeDuplicatesLoop();
+		System.out.println("*********** Remove Duplicates through Loop Iteration **************");
+		System.out.println(Arrays.toString(uniqueList)); 
+		System.out.println("");
+
+	}
+
+	/**
+	 * Remove duplicates through lambda functions using java8
+	 * First handling null by optional interface and then converting int array to stream and then distinct
+	 * and then to arraylist.
+	 * Advantages : Stream Processing
+	 * @param <T>
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> List<T> removeDuplicateInArray() 
+	{
+		randomIntegers = Optional.ofNullable(randomIntegers).orElse(new int[] {}); 
+		List<T> list = (List<T>) Arrays.stream(randomIntegers).boxed().distinct().collect(Collectors.toList());
+		//Sorted List
+		//List<Object> list = Arrays.stream(randomIntegers).boxed().sorted().distinct().collect(Collectors.toList());
+		return list;
+	}
+
+	/**
+	 * Remove duplicates through LinkedHashSet
+	 * In this approach i used LinkedHashSet, which also maintain the ordered in the given array.
+	 * Advantages : Set eliminates duplicates by default
+	 * @return
+	 */
+	public Set<Integer> removeDuplicateInIntArray()
+	{
+		Set<Integer> resultSet = new LinkedHashSet<Integer>();
+		for (int i : this.randomIntegers) {
+			resultSet.add(i);
+		}
+		return resultSet;
+	}
+	
+	/**
+	  * Remove duplicates through Linked list
+	  * In this approach i used LinkedList, which maintain the ordered in the given array.
+	  * Advantages : Being List,maintains order
+	  * DisAdvantage : Checks for contains on every element of Array
+	  * @return
+      */
+	public List<Integer> removeDuplicateIntegers() 
+	{
+		List<Integer> resultList = new LinkedList<Integer>();
+		for (int i : this.randomIntegers)
+		{
+			if(!resultList.contains(i)) {
+				resultList.add(i);
+			}
+		}
+		return resultList;
+	}
+	
+	/**
+	 * Remove duplicates through Loop Iteration In this approach I iterated the
+	 * Array with individual element. 
+	 * 1. Start with first element to iterate over the Array 
+	 * 2. Compare with every element , if duplicate found replace with last unique element 
+	 * 3. At every match decrement a counter , which is used to eliminate the duplicates using Array Copy
+	 * DisAdvantage : Multiple loop iterations, order not maintained.
+	 */
+	public int[] removeDuplicatesLoop() {
+		int lastUniqueElement = this.randomIntegers.length;
+		for (int elementToCompare = 0; elementToCompare < lastUniqueElement; elementToCompare++) {
+			for (int elementCompared = elementToCompare + 1; elementCompared < lastUniqueElement; elementCompared++) {
+				if (randomIntegers[elementToCompare] == randomIntegers[elementCompared]) {
+					randomIntegers[elementCompared] = randomIntegers[lastUniqueElement - 1];
+					lastUniqueElement--;
+					elementCompared--;
+				}
+			}
+		}
+		int[] arrayWithoutDuplicates = Arrays.copyOf(randomIntegers,
+				lastUniqueElement);
+		return arrayWithoutDuplicates;
+	}		
+}
+
